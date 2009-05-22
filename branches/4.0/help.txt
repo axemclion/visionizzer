@@ -1,0 +1,17 @@
+        This is a tool that has been written to enhance the ability the mouse
+cursors for DOS - in graphics mode. Basically, mouse cursors are changed by
+int 33h, (service 9). This requires a pointer to the bitmap in the CX and DX
+registers. This bitmap consists of a screen mask and a cursor mask.
+        The cursor mask bitmap is copied onto the screen, while the screen
+mask is XORed with the screen contents (to restore screen contents on removing
+the mouse form a position). This allows the user to have creative and cool
+cursors to appeal for theis DOS based applications. The code required to
+change the cursor is appended to the required file and can be cut from that
+location.
+        Also supplied is a <MOUSE.H> header file that wraps almost all the 
+mouse interrupts, in a programmable format. To the changecursor(...) function
+pass the char word[64]; value that actually represents.
+
+
+The cursor library is
+cursor.c

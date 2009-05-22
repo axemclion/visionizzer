@@ -1,0 +1,36 @@
+OBJAXE
+[appearence]
+setcolor(8)
+rectangle(x1-1,y1-1,x2,y2)
+setcolor(15)
+rectangle(x1,y1,x2+1,y2+1)
+outtextxy([x1+x2]/2,[y1+y2]/2,text)
+[end]
+[properties]
+x2=100
+y2=100
+x1=200
+y1=200
+x3=150
+y3=150
+text=Text
+**********
+[end]
+[events]
+void click()
+{
+//sample statements for label
+}
+void cppclick()
+{
+	extern int focus;
+	if (focus != 1)
+		return;
+	//inset your c++ statements here
+
+	//end the statements here
+}
+[end]
+[end]
+
+

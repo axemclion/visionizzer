@@ -1,0 +1,27 @@
+OBJAXE
+[appearence]
+loadbmp(x2,y2-11,file)
+[end]
+[properties]
+x2=100
+y2=100
+x1=200
+y1=200
+x3=150
+y3=150
+file=diode.xyz
+**********
+[end]
+[events]
+void click()
+{
+//sample statements for label
+}
+void double_click()
+{
+//sample lines for double click for label
+}
+[end]
+[end]
+
+

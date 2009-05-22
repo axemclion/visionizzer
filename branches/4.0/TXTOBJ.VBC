@@ -1,0 +1,59 @@
+OBJAXE
+[appearence]
+setcolor(15)
+setfillstyle(1,15)
+bar(x1,y1,x2,y2)
+setlinestyle(0,0,1)
+rectangle(x2,y2,x1,y1)
+settextstyle(12,0,1)
+setcolor(8)
+line(x1,y1,x2,y1)
+line(x1,y1,x1,y2)
+setcolor(00)
+rectangle(x2,y2,x1-2,y1-2)
+outtextxy(x2+2,[y1+y2]/2,text)
+[end]
+[properties]
+x2=100
+y2=100
+x1=200
+y1=200
+x3=150
+y3=150
+text=Text
+**********
+[end]
+[events]
+void click()
+{
+	extern object _ob[100];
+	extern mouse_status mouse;
+	extern int key;
+	extern int focus;
+
+	if (mouse.button != LEFT_CLICK)
+		return;
+	if ((_ob[focus].name)[strlen(_ob[focus].name)-1] == '\n')
+		 (_ob[focus].name)[strlen(_ob[focus].name)-1] = NULL;
+
+	char *ed__ = (char *)calloc(1,100);
+	getprop(_ob[focus].name,"text",ed__);
+	setcolor(0);
+	edit(ed__,(_ob[focus].x2-_ob[focus].x1)/textwidth("_"),_ob[focus].x1+2,(_ob[focus].y1+_ob[focus].y2)/2,7,15);
+	changeprop(_ob[focus].name,"text",ed__);
+	drawobj(_ob[focus].name);
+	free(ed__);
+}
+void cppclick()
+{
+extern int focus;
+	if (focus != 1)
+		return;
+	//inset your c++ statements here
+
+	//end the statements here
+}
+[end]
+[end]
+
+

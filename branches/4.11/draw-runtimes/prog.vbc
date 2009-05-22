@@ -1,0 +1,45 @@
+OBJAXE
+[appearence]
+setcolor(8)
+rectangle(x1,y1,x2,y2)
+setcolor(15)
+line(x1,y1,x1,y2)
+line(x1,y1,x2,y1)
+setcolor(0)
+rectangle(x1-1,y1-1,x2+1,y2+1)
+setcolor(7)
+line(x1-1,y1-1,x1-1,y2+1)
+line(x1-1,y1-1,x2+1,y1-1)
+setfillstyle(1,1)
+bar(x2+3,y2+3,x2+val*[x1-x2-3]/[max-min],[y1-2])
+setfillstyle(1,15)
+bar(x1-3,y2+3,x2+val*[x1-x2-3]/[max-min],[y1-2])
+[end]
+[properties]
+x2=100
+y2=100
+x1=200
+y1=200
+max=100
+min=0
+val=40
+**********
+[end]
+[events]
+void click()
+{
+//sample statements for label
+}
+void cppclick()
+{
+	extern int focus;
+	if (focus != 1)
+		return;
+	//inset your c++ statements here
+
+	//end the statements here
+}
+[end]
+[end]
+
+

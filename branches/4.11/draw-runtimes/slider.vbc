@@ -1,0 +1,77 @@
+OBJAXE
+[appearence]
+setlinestyle(1,0,1)
+setfillstyle(1,7)
+bar(x1,y1,x2,y2)
+setcolor(8)
+line(x2,y2+2,x1,y2+2)
+setcolor(15)
+line(x2,y2+3,x1,y2+3)
+setcolor(8)
+line(x2+val*[x1-x2]/[max-min],y2+3,x2+5+val*[x1-x2]/[max-min],y2+8)
+line(x2+5+val*[x1-x2]/[max-min],y2+8,x2+5+val*[x1-x2]/[max-min],y2+15)
+line(x2+5+val*[x1-x2]/[max-min],y2+15,x2-5+val*[x1-x2]/[max-min],y2+15)
+setcolor(15)
+line(x2+val*[x1-x2]/[max-min],y2+3,x2-5+val*[x1-x2]/[max-min],y2+8)
+line(x2-5+val*[x1-x2]/[max-min],y2+8,x2-5+val*[x1-x2]/[max-min],y2+15)
+line(x2,y2+3,x1,y2+3)
+[end]
+[properties]
+x2=100
+y2=100
+x1=200
+y1=200
+max=100
+min=0
+val=40
+**********
+[end]
+[events]
+void click()
+{
+	extern object _ob[100];
+	extern mouse_status mouse;
+	extern int key;
+	extern int focus;
+	mouse = status();
+	if (mouse.button != LEFT_CLICK)
+		return;
+	{char word[64] = {255,254,255,253,255,251,255,247,255,239,255,239,255,239,255,239,255,239,255,239,255,239,255,239,255,255,255,255,255,255,255,255,128,1,64,2,32,4,16,8,8,16,8,16,8,16,8,16,8,16,8,16,8,16,248,31,0,0,0,0,0,0,0,0};
+	mouse_change(word);}
+	hide_mouse();
+	setfillstyle(SOLID_FILL,7);
+	bar(_ob[focus].x1-5,_ob[focus].y1+4,_ob[focus].x2+5,_ob[focus].y2);
+	show_mouse();
+	bind_mouse(_ob[focus].x1,_ob[focus].y1+12,
+			_ob[focus].x2,_ob[focus].y1+12);
+	mouse = status();
+	while(mouse.button != 0)
+		mouse = status();
+	hide_mouse();
+	mouse = status();
+	mouse_present();position_mouse(mouse.x,mouse.y);
+	float t = (float)(mouse.x-_ob[focus].x1)/(float)(_ob[focus].x2-_ob[focus].x1)*100;
+	int val = t;
+	char s[10];
+	sprintf(s,"%d",(int)val);
+	if (_ob[focus].name[strlen(_ob[focus].name) -1]  == '\n')
+	_ob[focus].name[strlen(_ob[focus].name) -1] = NULL;
+	changeprop(_ob[focus].name,"val",s);
+	drawobj(_ob[focus].name);
+	show_mouse();
+	//insert your comments here
+	//finish the code here
+}
+void cppclick()
+{
+	extern int focus;
+	if (focus != 1)
+		return;
+	//inset your c++ statements here
+
+	//end the statements here
+}
+[end]
+[end]
+
+
