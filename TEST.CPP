@@ -1,5 +1,4 @@
 #include <graphics.h>
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <conio.h>
@@ -13,7 +12,7 @@
 # include "d:\prog\c\header1.h"
 # include "d:\prog\c\header2.h"
 
-
+struct object *_ob[100];
 int __obj;
 
 int main(void)

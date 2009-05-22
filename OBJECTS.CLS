@@ -50,7 +50,7 @@ typedef electronics delivery;
 class progbar
 {
 public:
-	unsigned int x1,y1,x2,y2,max,min,val;
+	int x1,y1,x2,y2,max,min,val;
 
 	progbar();
 	progbar(int,int,int,int,int,int,int);
@@ -104,7 +104,45 @@ int progbar::action()
 //sample statements for label
 return 1;
 }
+void edit(char *fname,int max,int x1,int y1,int fore=15,int back=0)
+{
+				int key=0;
+				int count =strlen(fname);
+				while (key != 13 && key !=27)
+				{
+					position_mouse(x1+10+textwidth(fname),y1);
+					key = -1;
+					if (kbhit())
+						key = getch();
 
+					char a[2];
+					if (key == 8 && strlen(fname) > 0)
+						{
+						hide_mouse();
+						char *b = (char *)calloc(1,strlen(fname)+3);
+						strncpy(b,fname,strlen(fname)-1);
+						setcolor(back);
+						outtextxy(x1,y1,fname);
+						strcpy(fname,b);
+						setcolor(fore);
+						outtextxy(x1,y1,fname);
+						free(b);
+						count--;
+						show_mouse();
+						}//end of backspace
+					if (key >= 32 && key < 126 && count < max)
+						{
+						setcolor(fore);
+						count++;
+						sprintf(a,"%c",key);
+						strcat(fname,a);
+						hide_mouse();
+						outtextxy(x1,y1,fname);
+						position_mouse(x1+10+textwidth(fname),y1);
+						show_mouse();
+						}
+				}//end of word typed
+}//end of tex editing
 class label
 {
 public :
@@ -153,6 +191,9 @@ int label::action()
 {
 return 2;
 }
+
+
+
 
 class textbox
 {
@@ -208,9 +249,9 @@ y3=150;
 
 int textbox::action()
 {
-	  mouse_status mouse;
-	  int key;
-	  int focus;
+	extern mouse_status mouse;
+	extern int key;
+	extern int focus;
 
 	if (mouse.button != LEFT_CLICK)
 		return 2;
@@ -222,6 +263,8 @@ int textbox::action()
 	strcpy(text,ed__);
 	return 1;
 }
+
+
 
 class slider
 {
@@ -279,18 +322,20 @@ slider::slider()
 
 int slider::action()
 {
-	bind_mouse(x1,y1+12,x2,y1+12);
-	mouse_status mouse;
+	extern mouse_status mouse;
+	extern int key;
+	extern int focus;
 	mouse = status();
 	if (mouse.button != LEFT_CLICK)
 		return 2;
-	{
-	char word[64] = {255,254,255,253,255,251,255,247,255,239,255,239,255,239,255,239,255,239,255,239,255,239,255,239,255,255,255,255,255,255,255,255,128,1,64,2,32,4,16,8,8,16,8,16,8,16,8,16,8,16,8,16,8,16,248,31,0,0,0,0,0,0,0,0};
-	mouse_change(word,8,8);
-	}
+	{char word[64] = {255,254,255,253,255,251,255,247,255,239,255,239,255,239,255,239,255,239,255,239,255,239,255,239,255,255,255,255,255,255,255,255,128,1,64,2,32,4,16,8,8,16,8,16,8,16,8,16,8,16,8,16,8,16,248,31,0,0,0,0,0,0,0,0};
+	mouse_change(word,8,8);}
+	hide_mouse();
 	setfillstyle(SOLID_FILL,7);
 	bar(x1-5,y1+4,x2+5,y2);
 	show_mouse();
+	bind_mouse(x1,y1+12,
+			x2,y1+12);
 	mouse = status();
 	while(mouse.button != 0)
 		mouse = status();
@@ -304,129 +349,83 @@ int slider::action()
 	return 1;
 }
 
-class button
+
+
+class command
 {
-	int x2,y2,x1,y1;
 
-	public:
-
+public :
+	int x2,y2;
+	int x1,y1;
+	int x3,y3;
 	char text[100];
-	button();
-	void init(int a,int b,int c,int d,char *text1);
-	button(int a,int b,int c,int d,char *text1);
-	int in(int,int);
+
+	command();
+	command(int,int,int,int,int,int,char[]);
 	void draw();
-	void depress();
-	void up();
-	int lclick(int,int);
+	int action();
 };
 
-	int button::in(int ax,int ay)
-	{
-		return inarea(ax,ay,x1,y1,x2,y2);
-	}
+command::command()
+{
+	x1=y1=100;
+	x2=y2=200;
+	x3=y3=150;
+	strcpy(text,"Command");
+}//end of constructor
 
-	void button::draw()
-	{
-		setlinestyle(0,0,1);
-		setcolor(15);
-		rectangle(x2,y2,x1,y1);
-		setfillstyle(1,7);
-		int x3,y3;
-		x3 = min(x1,x2)+abs(x2-x1)/2-textwidth(text)/2;
-		y3 = min(y1,y2)+abs(y2-y1)/2-textheight(text)/2;
-		floodfill(x3,y3,15);
-		setcolor(8);
-		line(x1,y1,x1,y2);
-		line(x1,y1,x2,y1);
-		settextstyle(12,0,1);
-		setcolor(0);
-		outtextxy(x3,y3,text);
-	}//end of drawing button
+command::command(int ax1,int ay1,int ax2,int ay2,int ax3,int ay3,char atext[100])
+{
+	x1 = ax1;
+	x2 = ax2;
+	x3 = ax3;
+	y1 = ay1;
+	y2 = ay2;
+	y3 = ay3;
+	strcpy(text,atext);
+}//end of parameterised constructor
 
-	void button::up()
-	{
-	hide_mouse();
-	setcolor(15);
-	rectangle(x1,y1,x2,y2);
+void command::draw()
+{
+	setlinestyle(0,0,1);
+	setfillstyle(1,7);
+	bar(x1,y1,x2,y2);
 	setcolor(8);
-	line(x1,y1,x1,y2);
-	line(x1,y1,x2,y1);
-	show_mouse();
-	}//end of depressoing button
-
-	void button::depress()
-	{
-	hide_mouse();
-	setcolor(8);
-	rectangle(x1,y1,x2,y2);
+	rectangle(x2,y2,x1,y1);
 	setcolor(15);
 	line(x1,y1,x1,y2);
 	line(x1,y1,x2,y1);
+	settextstyle(12,0,1);
+	settextjustify(1,1);
+	setcolor(15);
+	outtextxy((x1+x2)/2,(y1+y2)/2,text);
+}//end of drawing
+
+int command::action()
+{
+	extern mouse_status mouse;
+	extern int key;
+	extern int focus;
+	mouse = status();
+	if (mouse.button == 0)
+		return 2;
+	hide_mouse();
+	setcolor(8);
+	rectangle(x1,y1,x2,y2);
+	setcolor(15);
+	line(x1,y2,x2,y2);
+	line( x2, y1, x2, y2);
 	show_mouse();
-
-	}//end of button uping
-	button::button()
-	{
-		x1 = x2=y1=y2=0;
-	}
-
-	void button::init(int a,int b,int c,int d,char *text1)
-	{
-		x1=max(a,c);
-		x2=min(a,c);
-		y1=max(b,d);
-		y2=min(d,b);
-		strcpy(text,text1);
-	 }
-
-
-	button::button(int a,int b,int c,int d,char *text1)
-	{
-		x1=max(a,c);
-		x2=min(a,c);
-		y1=max(b,d);
-		y2=min(d,b);
-		strcpy(text,text1);
-	 }
-
-	int button::lclick(int ax,int ay)
-	{
-		if (in(ax,ay))
-		{
-			mouse_status mouse = status();
-			if (mouse.button != 0)
-				{
-				setfillstyle(SOLID_FILL,7);
-				bar(x1,y1,x2,y2);
-				setcolor(8);
-		int x3,y3;
-		x3 = min(x1,x2)+abs(x2-x1)/2-textwidth(text)/2;
-		y3 = min(y1,y2)+abs(y2-y1)/2-textheight(text)/2;
-				outtextxy(x3+1,y3+1,text);
-				depress();
-				}
-			while (mouse.button != 0)
-				mouse=status();
-				setfillstyle(SOLID_FILL,7);
-				bar(x1,y1,x2,y2);
-				setcolor(8);
-		int x3,y3;
-		x3 = min(x1,x2)+abs(x2-x1)/2-textwidth(text)/2;
-		y3 = min(y1,y2)+abs(y2-y1)/2-textheight(text)/2;
-				outtextxy(x3,y3,text);
-
-				up();
-		if (inarea(mouse.x,mouse.y,x1,y1,x2,y2))
-			return 1;
-		else
-			return 0;
-		}//end of inside area
-		else
-			return 0;
-
-	}//end of clickig
-
+	xclick();
+	hide_mouse();
+	setcolor(15);
+	rectangle( x1, y1, x2, y2);
+	setcolor(8);
+	line( x1, y2, x2, y2);
+	line( x2, y1, x2, y2);
+	show_mouse();
+	return 1;
+}
 
 
 class hsb
@@ -482,8 +481,8 @@ hsb::hsb(int ax1,int ay1,int ax2,int ay2,int amax,int amin,int aval)
 
 int hsb::action()
 {
-	  mouse_status mouse;
-	  int focus;
+	extern mouse_status mouse;
+	extern int focus;
 	mouse = status();
 	if (mouse.button != LEFT_CLICK)
 		return 2;
@@ -600,8 +599,8 @@ vsb::vsb()
 
 int vsb::action()
 {
-	  mouse_status mouse;
-	  int focus;
+	extern mouse_status mouse;
+	extern int focus;
 	mouse = status();
 	if (mouse.button != LEFT_CLICK)
 		return 2;
@@ -702,13 +701,15 @@ strcpy(file,"check.xyz");
 
 int chkbox::action()
 {
-	mouse_status mouse;
-	mouse = status();
+	extern mouse_status mouse;
+	extern int key;
+	extern int focus;
+
 	if (mouse.button == 0)
 		return 2;
-	if (mouse.button == RIGHT_CLICK)
+	if (mouse.button == LEFT_CLICK)
 		strcpy(file,"nocheck.xyz");
-	else if (mouse.button == LEFT_CLICK)
+	else if (mouse.button == RIGHT_CLICK)
 		strcpy(file,"check.xyz");
 	draw();
 	xclick();
@@ -740,6 +741,7 @@ cirbar::cirbar(int ax1,int ay1,int ax2,int ay2,int amax,int amin,int ava,int ast
 
 void cirbar::draw()
 {
+setlinestyle(1,0,1);
 setfillstyle(1,7);
 bar(x2-1,y2-1,x1+1,y1+1);
 setfillstyle(9,7);

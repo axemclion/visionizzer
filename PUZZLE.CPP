@@ -4,8 +4,8 @@
 #include <conio.h>
 #include <dos.h>
 #include <string.h>
-#include "d:\prog\c\mouse.h"
-#include "d:\prog\c\button.cls"
+#include <mouse.h>
+#include <button.cls>
 
 # define X 100
 # define Y 100

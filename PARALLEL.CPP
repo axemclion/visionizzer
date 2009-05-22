@@ -5,9 +5,9 @@
 #include <conio.h>
 #include <dos.h>
 #include <string.h>
-#include "d:\prog\c\mouse.h"
-#include "d:\prog\c\button.cls"
-#include "d:\prog\c\bmploade.cpp"
+#include <mouse.h>
+#include <button.cls>
+#include "d:\prog\c\draw\bmploade.cpp"
 
 # define B 9
 # define F 15

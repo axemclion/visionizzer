@@ -1,6 +1,5 @@
 # define DELAY 200
 
-# include <process.h>
 #include <string.h>
 #include <math.h>
 #include <dos.h>
@@ -11,11 +10,12 @@
 #include <mouse.h>
 #include "d:\prog\c\draw\bmploade.cpp"
 
-void init()
+int main(void)
 {
 	int gdriver = DETECT, gmode, errorcode;
 	initgraph(&gdriver, &gmode, "");
 	errorcode = graphresult();
+	int result = 0;
 	if (errorcode != grOk)  /* an error occurred */
 	{
 		printf("Graphics error: %s\n", grapherrormsg(errorcode));
@@ -25,16 +25,8 @@ void init()
 	}
 	loadbmp("select");
 	mouse_present();
-}//end of init functions
-
-
-int main(void)
-{
-	int result = 0;
-	init();
 	mouse_status mouse;
-while (result == 0)
-{
+st:
 	show_mouse();
 	xclick();
 	mouse = click();
@@ -43,64 +35,71 @@ while (result == 0)
 	char name[100];
 	setfillstyle(9,10);
 	if (inarea(mouse.x,mouse.y,165,142,250,229))
-		result = 1;
-	else if(inarea(mouse.x,mouse.y,378,143,463,229))
-		result = 2;
-	else if(inarea(mouse.x,mouse.y,165,255,250,341))
-		result = 3;
-	else if(inarea(mouse.x,mouse.y,378,255,463,341))
-		result = 4;
-	else if(inarea(mouse.x,mouse.y,165,362,250,448))
-		result = 5;
-	else if(inarea(mouse.x,mouse.y,378,362,463,447))
-		result = 6;
-	else if (inarea(mouse.x,mouse.y,260,200,365,270))
-		result = 7;
-	else if (inarea(mouse.x,mouse.y,260,300,365,370))
-		break;
-
-	if (result != 0)
-	{
-		for (int i = 0;i < 640;i+=2)
-			circle(mouse.x,mouse.y,i);
-		closegraph();
-
-		switch(result)
 		{
-			case 1:
-				result = spawnl(P_WAIT,"puzzle.exe",NULL);
-				break;
-			case 3:
-				result = spawnl(P_WAIT,"trans.exe",NULL);
-				break;
-			case 5:
-				result = spawnl(P_WAIT,"computer.exe",NULL);
-				result = spawnl(P_WAIT,"you.exe",NULL);
-				break;
-			case 2:
-				result = spawnl(P_WAIT,"cobgen.exe",NULL);
-				break;
-			case 4:
-				result = spawnl(P_WAIT,"mouse.exe",NULL);
-				break;
-			case 6:
-				result = spawnl(P_WAIT,"port.exe",NULL);
-				break;
-			case 7:
-				result = spawnl(P_WAIT,"pres.exe",NULL);
-				break;
-		}//end of switch case
-		if (result != 0)
-			{
-			printf("Component Unavailable\nPleae press any key to continue....");
-			getch();
-			}
-		init();
+		result = 1;
+		strcpy(name,"Presentation");
+		bar(165,142,250,229);
+		}
+	else if(inarea(mouse.x,mouse.y,378,143,463,229))
+		{
+		result = 2;
+		strcpy(name,"VisioniZZer");
+		bar(378,143,463,229);
+		}
+	else if(inarea(mouse.x,mouse.y,165,255,250,341))
+		{
+		result = 3;
+		strcpy(name,"Port Tester");
+		bar(165,255,250,341);
+		}
+	else if(inarea(mouse.x,mouse.y,378,255,463,341))
+		{
+		result = 4;
+		strcpy(name,"Mousepointer");
+		bar(378,255,463,341);
+		}
+	else if(inarea(mouse.x,mouse.y,165,362,250,448))
+		{
+		result = 5;
+		strcpy(name,"Knots & Krosses");
+		bar(165,362,250,448);
+		}
+	else if(inarea(mouse.x,mouse.y,378,362,463,447))
+		{
+		result = 6;
+		strcpy(name,"Exit");
+		bar(378,362,463,447);
+		}
+	else goto st;
+	setcolor(11);
+	for (int i = 0;i < 640;i+=2)
+		{
+		circle(mouse.x,mouse.y,i);
+		delay(2);
+		}
 
-	}//end of manipulating result
-	result = 0;
-
-}//end of the main loop
+	settextstyle(0,0,5);
+	setcolor(12);
+	settextjustify(CENTER_TEXT,CENTER_TEXT);
+	int x = getmaxx()/2-textwidth(name)/2;
+	char t[2];
+	t[1] = NULL;
+	for (i=0;i < strlen(name);i++)
+		{
+		t[0] = name[i];
+		outtextxy(x,getmaxy()/2,t);
+		x=x+textwidth(t);
+		delay(DELAY);
+		}
+	delay(200);
+	setcolor(0);
+	for (i = 0;i < getmaxy();i++)
+		{
+		line(0,i,getmaxx(),i);
+		delay(3);
+		}
 	closegraph();
+	if (mouse.button == RIGHT_CLICK)
+		return 7;
 	return result;
-}//end of main
+}

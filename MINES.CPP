@@ -5,8 +5,8 @@
 #include <conio.h>
 #include <string.h>
 #include <dos.h>
-#include "d:\prog\c\mouse.h"
-#include "d:\prog\c\button.cls"
+#include <mouse.h>
+#include <button.cls>
 
 # define ROWS 8
 # define COLS 8

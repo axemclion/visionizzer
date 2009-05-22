@@ -1,0 +1,123 @@
+OBJAXE
+[appearence]
+setfillstyle(1,7)
+bar(x1,y1,x2,y2)
+setcolor(15)
+rectangle(x1,y1,x2,y2)
+sector(x2+[y1-y2],[y2+y1]/2,270,90,[y1-y2]-4,[y1-y2]/2-4)
+ellipse(x1-[y1-y2],[y2+y1]/2,0,90,[y1-y2]-4,[y1-y2]/2-4)
+line(x1-[y1-y2],y2+4,x1-[y1-y2],y1-4)
+ellipse(x2+[y1-y2]+12+val*[x1-x2-24-2*[y1-y2]]/[max-min],[y1+y2]/2,0,360,10,[y1-y2]/2-4)
+setcolor(8)
+ellipse(x2+[y1-y2]+12+val*[x1-x2-24-2*[y1-y2]]/[max-min],[y1+y2]/2,225,45,10,[y1-y2]/2-4)
+ellipse(x2+[y1-y2],[y2+y1]/2,180,270,[y1-y2]-4,[y1-y2]/2-4)
+ellipse(x1-[y1-y2],[y2+y1]/2,270,0,[y1-y2]-4,[y1-y2]/2-4)
+line(x1,y2,x2,y2)
+line(x2,y1,x2,y2)
+[end]
+[properties]
+x2=100
+y2=100
+x1=200
+y1=200
+max=100
+min=0
+val=40
+**********
+[end]
+[events]
+void click()
+{
+	extern object _ob[100];
+	extern mouse_status mouse;
+	extern int key;
+	extern int focus;
+	mouse = status();
+	if (mouse.button != LEFT_CLICK)
+		return;
+	int val,max,min;
+	char s[10];
+	if (_ob[focus].name[strlen(_ob[focus].name) -1] == '\n')
+		_ob[focus].name[strlen(_ob[focus].name) -1] = NULL;
+			getprop(_ob[focus].name,"val",s,10);val = atoi(s);
+			getprop(_ob[focus].name,"min",s);min = atoi(s);
+			getprop(_ob[focus].name,"max",s);max = atoi(s);
+	if (inarea(mouse.x,mouse.y,
+				_ob[focus].x1,_ob[focus].y1,
+				_ob[focus].x1+_ob[focus].y2-_ob[focus].y1,_ob[focus].y2) && val > min)
+			{
+			sprintf(s,"%d",--val);
+			changeprop(_ob[focus].name,"val",s);
+			}
+	else if (inarea(mouse.x,mouse.y,
+				_ob[focus].x2,_ob[focus].y1,
+				_ob[focus].x2-(_ob[focus].y2-_ob[focus].y1),_ob[focus].y2) && val < max)
+			{
+			sprintf(s,"%d",++val);
+			changeprop(_ob[focus].name,"val",s);
+			}
+	else if (inarea(mouse.x,mouse.y,
+	_ob[focus].x1+(_ob[focus].y2-_ob[focus].y1)+11,_ob[focus].y1,
+	_ob[focus].x2-(_ob[focus].y2-_ob[focus].y1)-11,_ob[focus].y2))
+		{
+		char word[64] = {63,252,207,243,247,239,255,223,255,191,255,191,255,127
+		,255,127,255,127,255,127,255,191,255,191,255,223,255,255,255,255,255
+		,255,192,3,48,12,8,16,4,32,2,64,2,64,1,128,1,128,1,128,1,128,2,64,2,64,
+		4,32,8,16,48,12,192,3};
+		mouse_change(word,8,8);
+		setfillstyle(1,7);
+		hide_mouse();
+		bar(_ob[focus].x1 -_ob[focus].y1 + _ob[focus].y2+2,_ob[focus].y1+3,
+		_ob[focus].x2 + _ob[focus].y1 - _ob[focus].y2-2,_ob[focus].y2-3);
+		show_mouse();
+		bind_mouse(
+		_ob[focus].x2-(_ob[focus].y2-_ob[focus].y1)-11,
+		(_ob[focus].y2+_ob[focus].y1)/2,
+		_ob[focus].x1+(_ob[focus].y2-_ob[focus].y1)+11,
+		(_ob[focus].y2+_ob[focus].y1)/2);
+		while (mouse.button != 0)
+			{
+			mouse = status();
+			}//end of drawgging
+		val = (float)(mouse.x-_ob[focus].x1-(_ob[focus].y2-_ob[focus].y1)-12)/
+			(float)(_ob[focus].x2-_ob[focus].x1-24-2*(_ob[focus].y2-_ob[focus].y1))
+			*(float)(max-min);
+			sprintf(s,"%d",val);
+			changeprop(_ob[focus].name,"val",s);
+		mouse = status();
+		mouse_present();
+		position_mouse(mouse.x,mouse.y);
+		show_mouse();
+		}//end of dragging*/
+	hide_mouse();
+	setfillstyle(1,7);
+	bar(_ob[focus].x1 -_ob[focus].y1 + _ob[focus].y2+2,_ob[focus].y1+3,
+	_ob[focus].x2 + _ob[focus].y1 - _ob[focus].y2-2,_ob[focus].y2-3);
+
+	setcolor(15);
+	ellipse(_ob[focus].x1+(_ob[focus].y2-_ob[focus].y1)+12+val*(float)(_ob[focus].x2-
+	_ob[focus].x1-24-2*(_ob[focus].y2-_ob[focus].y1))/(float)(max-min),(
+	_ob[focus].y1+_ob[focus].y2)/2
+	,0,360,
+	10,(_ob[focus].y2-_ob[focus].y1)/2-4);
+	setcolor(8);
+	ellipse(_ob[focus].x1+(_ob[focus].y2-_ob[focus].y1)+12+val*(float)(_ob[focus].x2-
+	_ob[focus].x1-24-2*(_ob[focus].y2-_ob[focus].y1))/(float)(max-min),(
+	_ob[focus].y1+_ob[focus].y2)/2
+	,225,45,
+	10,(_ob[focus].y2-_ob[focus].y1)/2-4);
+	show_mouse();
+}
+void cppclick()
+{
+	extern int focus;
+	if (focus != 1)
+		return;
+	//inset your c++ statements here
+
+	//end the statements here
+}
+[end]
+[end]
+
+

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dos.h>
-#include "d:\prog\c\mouse.h"
+#include <mouse.h>
 # define DEL 3
 
 

@@ -9,10 +9,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <conio.h>
-#include <string.h>
+#include <mouse.h>
+# include <string.h>
+#include <button.cls>
 #include <alloc.h>
-#include "d:\prog\c\mouse.h"
-#include "d:\prog\c\button.cls"
 
 void intro();
 void redraw();
@@ -54,7 +54,6 @@ int main(void)
 	int gdriver = DETECT, gmode, errorcode;
 	initgraph(&gdriver, &gmode, "");
 	errorcode = graphresult();
-	mouse_present();
 	if (errorcode != grOk)  /* an error occurred */
 	{
 		printf("Graphics error: %s\n", grapherrormsg(errorcode));
@@ -697,11 +696,13 @@ if (mouse.button == LEFT_CLICK)
 
 			if (reset.lclick(mouse.x,mouse.y))
 			{
-			revert();
 			setfillstyle(SOLID_FILL,8);
 			bar(282,102,308,128);
 			setfillstyle(SLASH_FILL,0);
 			bar(252,102,278,128);
+			REGS ia;
+			ia.x.ax = 0;
+			int86(0x33,&ia,&ia);
 		for (int i=0;i < 16;i++)
 		{
 		setcolor(i);
