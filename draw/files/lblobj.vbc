@@ -1,0 +1,38 @@
+OBJAXE
+[appearence]
+setcolor(15)
+setlinestyle(0,0,1)
+rectangle(x2,y2,x1,y1)
+setfillstyle(1,7)
+floodfill(x3,y3,15)
+settextstyle(12,0,1)
+setcolor(08)
+line(x2,y2,x1,y2)
+line(x2,y2,x2,y1)
+outtextxy(x3,y3,text)
+[end]
+[properties]
+label
+type=label
+x2=100
+y2=100
+x1=200
+y1=200
+x3=150
+y3=150
+text=Text
+**********
+[end]
+[events]
+void click()
+{
+//sample statements for label
+}
+void double_click()
+{
+//sample lines for double click for label
+}
+[end]
+[end]
+
+

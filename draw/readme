@@ -1,0 +1,99 @@
+                        Online Documentation for
+
+								 ÖÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ·
+                         º ®®®® DRAW 2.0 ¯¯¯¯ º
+                         ÓÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ½
+
+                       ( A GUI editor for C, C++)
+
+                       coded by: AxeShove McClion
+                      email: axemclion@yahoo.co.in
+
+
+    Table of Contents 
+    ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ        
+
+        1. Introduction
+        2. The Interface
+        3. Adding 2-Ds
+        4. Adding 3-Ds
+        5. Genrating Code
+        6. Others
+        7. Credits
+
+       Press 'F1' for help on help !!!
+
+1. Introduction :
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ        
+        I wrote this to enable the users to write easy GUI based programs
+easily in C for DOS. Almost all the programs use redunt code for drawing
+GUI features. The interface resembles Visual Basic. However, you can also
+modify the coding that is generated. This code is not meant to be
+professionalised and you may obtain the source code on contacting me.
+
+2. The Interface :
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ        
+        The basic components of the interface are :
+
+        Right Click the mouse Anywhere:
+        and you get a tool box. 
+
+  ToolBox : allows to draw various available objects
+        Click both mouse buttons Anywhere :
+        and you get a "Quit the Session" dialog
+                Quit : Used to quit the current session
+
+        Right Click anywhere to select a required object
+
+3. Adding 2-Ds :
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+        Right Click anywhere to get the tool box.
+
+        Click on an object you want to draw eg. Line, Box, Circle ....
+        You can also use the shortcut keys. The are the letters beside the
+        icons.
+
+        The instruction on the top of the screen guide you through the drawing
+        process.
+        At anytime, if you get screen garbles, just press 'D'  to refresh.
+
+        2-D objects are just lines and rectangles that cannot react to
+        externaluser events. They just add color to your interface.
+
+3. Adding 3-Ds :
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        3-Ds can react to external events. You can write the code for
+        performing various operations.
+        You can also add your own controls and change the appearence
+        of the existing controls. Please contact me for more information on
+        this.
+
+        Hit '0' to invoke the code editor. The MS-DOS edit opens and you can
+        type in code there. Furthur help on this is given in the editor's
+        help option. I changed the default help to this. 
+
+        Hit '4' to get the attributes dialog. Here you can change any
+        properties of the 3-D object. You can even change the type of
+        object ! But be careful, this may introduce a bug.
+
+
+4. Generating the Code :
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+        Just press 'W' or use the Toolbox, enter the filename to save the
+        code and the your code is generated.
+        Then open it to make any modifications and compile it as an ordinary
+        C program to get the .exe file.
+        Simple isn't it ???
+
+5. Credits :
+ÄÄÄÄÄÄÄÄÄÄÄÄ
+
+        I have written this code all alone, but will be happy if you can lend
+        me some help. I badly need some one to rewrite this help in an
+        exhaustive format.
+
+        All suggestions, bug reports, complaints and help is welcomed.
+        Feel free to mail me at
+        axemclion@yahoo.co.in.
+

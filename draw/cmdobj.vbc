@@ -1,0 +1,71 @@
+OBJAXE
+[appearence]
+setlinestyle(0,0,1)
+setcolor(15)
+rectangle(x2,y2,x1,y1)
+setfillstyle(1,7)
+floodfill(x3,y3,15)
+setcolor(08)
+line(x1,y1,x1,y2)
+line(x1,y1,x2,y1)
+settextstyle(12,0,1)
+settextjustify(1,1);
+setcolor(15)
+outtextxy(x3,y3,text)
+[end]
+[properties]
+command
+type=command
+x2=100
+y2=100
+x1=200
+y1=200
+x3=150
+y3=150
+text=C
+**********
+[end]
+[events]
+void click()
+{
+extern char *_val[];
+mouse_status mouse;
+mouse = down();
+if (mouse.button != 0)
+	{
+	hide_mouse();
+	int x1,y1,x2,y2;
+	x1=atoi(_val[1]);
+	y1=atoi(_val[2]);
+	x2=atoi(_val[3]);
+	y2=atoi(_val[4]);
+	setcolor(15);
+	rectangle(x1,y1,x2,y2);
+	setcolor(8);
+	line(x1,y1,x1,y2);
+	line(x1,y1,x2,y1);
+	show_mouse();
+	while (mouse.button != 0)
+		mouse = down();
+	hide_mouse();
+	setcolor(8);
+	rectangle(x1,y1,x2,y2);
+	setcolor(15);
+	line(x1,y1,x1,y2);
+	line(x1,y1,x2,y1);
+	show_mouse();
+	}//end of mouse click
+
+//insert your statements here
+
+// finish of your statements
+}
+void double_click()
+{
+//sample lines for double click
+}
+void mouse_move()
+{
+//sample statements for mouse move
+}
+[end]

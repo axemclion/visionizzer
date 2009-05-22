@@ -9,10 +9,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <conio.h>
-#include <string.h>
-#include <alloc.h>
-#include "d:\prog\c\mouse.h"
-#include "d:\prog\c\button.cls"
+#include <mouse.h>
+# include <string.h>
+# include <button.cls>
+# include <alloc.h>
 
 void intro();
 void redraw();
@@ -54,7 +54,6 @@ int main(void)
 	int gdriver = DETECT, gmode, errorcode;
 	initgraph(&gdriver, &gmode, "");
 	errorcode = graphresult();
-	mouse_present();
 	if (errorcode != grOk)  /* an error occurred */
 	{
 		printf("Graphics error: %s\n", grapherrormsg(errorcode));
@@ -62,7 +61,6 @@ int main(void)
 		getch();
 		exit(1);             /* return with error code */
 	}
-
 		for (int q=0;q<16;q++)
 			for (int w=0;w<16;w++)
 				{
@@ -85,16 +83,15 @@ int main(void)
 	sprintf(temp,"%c",24);button fup(130,290,180,270,temp),ffill(130,300,240,320,"Fill All");
 	sprintf(temp,"%c",25);button fdown(190,290,240,270,temp),fclear(0,300,110,320,"Clear All");
 
-	button test(250,140,310,160,"Test");
-	button reset(250,170,310,190,"Reset");
-	button prev(250,10,310,30,"Prev");
-	button next(250,40,310,60,"Next");
+	button test(250,90,310,115,"Test");
+	button reset(250,150,310,125,"Reset");
+	button prev(250,10,310,70,"Prev");
+	button next(250,230,310,170,"Next");
 
 	sprintf(temp,"%c",27);button bleft(320 +0,290,320 +50,270,temp);
 	sprintf(temp,"%c",26);button bright(320 +60,290,320 +110,270,temp);
 	sprintf(temp,"%c",24);button bup(320 +130,290,320 +180,270,temp),bfill(320 +130,300,320 +240,320,"Fill All");
 	sprintf(temp,"%c",25);button bdown(320 +190,290,320 +240,270,temp),bclear(320 +0,300,320 +110,320,"Clear All");
-
 	button bcopy(570,130,620,30,"Copy");
 	button bnot(570,240,620,140,"Not");
 
@@ -107,6 +104,7 @@ int main(void)
 	button bcup(320+0,360,320+110,380,"Copy to top");
 	button bcdown(320+130,360,320+240,380,"Copy to down");
 /*********************drawing starts*************************/
+
 	setcolor(2);
 	for (q=0;q <= 240; q+=15)
 		{
@@ -117,14 +115,8 @@ int main(void)
 		}//end of for loop*/
 	setcolor(10);
 
-	setfillstyle(SOLID_FILL,8);
-	bar(250,70,310,130);
-	rectangle(250,70,310,130);
-	line(280,70,280,130);
-	line(250,100,310,100);
-
-
 	rectangle(0,0,240,240);rectangle(320,0,320+240,240);
+
 	line(0,120,240,120);	line(320,120,320+240,120);
 	line(120,0,120,240);	line(320+120,0,320+120,240);
 	setlinestyle(3,0,1);
@@ -176,8 +168,6 @@ int main(void)
 	show_mouse();
 	int quit = 0;
 	quit = 0;
-		setfillstyle(SOLID_FILL,14);
-		bar(282,102,308,128);
 
 	while (!quit)
 	{
@@ -186,72 +176,6 @@ int main(void)
 		printf("(%3d,%3d)",mouse.x,mouse.y);
 		int key;
 		sprintf(temp,"Change cursor library. Current library :%s %3d",curlib,curtotal);
-
-		{
-if (inarea(mouse.x,mouse.y,250,100,280,130) && mouse.button == LEFT_CLICK)
-{
-	FILE *fp;
-	fp = fopen(curlib,"rt");
-
-		while(inarea(mouse.x,mouse.y,250,100,280,130) && curtotal > 0)
-		{
-		mouse = status();
-		if (fp == NULL)
-			break;
-		int c;
-		int ch;
-		while (c != '{')
-				{
-				c = fgetc(fp);
-				if (feof(fp))
-					rewind(fp);
-				}
-		for (ch=0;ch <64 && !feof(fp);ch++)
-		{
-			c=0;
-			word[ch] = 0;
-			while (c != '}' && c != ',')
-			{
-				c = fgetc(fp);
-				if (c >= '0' && c <= '9')
-					word[ch] = word[ch] * 10 + c-'0';
-			}
-		}//end of parsing 64 inpouts
-		mouse_change(word);
-		hide_mouse();
-		show_mouse();
-		delay(200);
-		}//end of animation
-		mouse = status();
-		mouse_present();
-		position_mouse(mouse.x,mouse.y);
-		fclose(fp);
-		show_mouse();
-}//end of closingg the animation file
-		for (int x = 0;x < 16;x++)
-			for (int y = 0;y < 16;y++)
-				{
-				putpixel(x+257,y+77,cur[x][y]*15);
-				putpixel(x+287,y+77,back[x][y]*15);
-				}//end of drawing all previews
-		}
-		if (mouse.button == LEFT_CLICK && inarea(mouse.x,mouse.y,280,100,310-15,130-15))
-		{
-			char *sc = (char *)malloc(imagesize(0,0,16,16));
-			getimage(mouse.x,mouse.y,mouse.x+16,mouse.y+16,sc);
-			hide_mouse();
-			putimage(mouse.x,mouse.y,sc,COPY_PUT);
-			show_mouse();
-			free(sc);
-			for  (int x=0;x <  16;x++)
-				for  (int y=0;y <  16;y++)
-					{
-					cur[x][y] = getpixel(mouse.x+x,mouse.y+y)/15;
-					back[x][y] =getpixel(mouse.x+x,mouse.y+y) == 0 ? 0:1;
-					back[x][y] =cur[x][y] == 1 ? 0:back[x][y];
-					}//end of capturing cursor
-		}
-
 
 if (test.in(mouse.x,mouse.y)) StatusLine("Change current cursor to developed cursor");
 else if (reset.in(mouse.x,mouse.y)) StatusLine("Reset the cursor to pointer");
@@ -290,7 +214,6 @@ else if (lib.in(mouse.x,mouse.y)) StatusLine(temp);
 
 if (inarea(mouse.x,mouse.y,0,0,240,240))
 {
-
 	StatusLine("Click in this area to create cursor mask area");
 	int x,y;
 	x = mouse.x/15;
@@ -315,7 +238,6 @@ if (inarea(mouse.x,mouse.y,0,0,240,240))
 
 if (inarea(mouse.x,mouse.y,320,0,320+240,240))
 {
-
 	StatusLine("Click in this area to create screen mask area");
 	int x,y;
 	x = (mouse.x-320)/15;
@@ -697,11 +619,9 @@ if (mouse.button == LEFT_CLICK)
 
 			if (reset.lclick(mouse.x,mouse.y))
 			{
-			revert();
-			setfillstyle(SOLID_FILL,8);
-			bar(282,102,308,128);
-			setfillstyle(SLASH_FILL,0);
-			bar(252,102,278,128);
+			REGS ia;
+			ia.x.ax = 0;
+			int86(0x33,&ia,&ia);
 		for (int i=0;i < 16;i++)
 		{
 		setcolor(i);
@@ -947,9 +867,9 @@ void intro()
 {
 	char buffer[100];
 	int count=0;
-	clrscr();
 	FILE *fp;
 	fp = fopen("help.txt","rt");
+	printf("Mouseware - tool for creating cursors in DOS \n\t\tProgramming - its what your fingers are for ... \n");
 	if (fp != NULL)
 	{
 		while (!feof(fp) || kbhit())
@@ -971,8 +891,8 @@ void intro()
 			}//end of file attained
 		printf("\bThe current cursor library is <%s>\n",curlib);
 		fclose(fp);
-	getch();
 	}//end of file opening
+	puts("Press any key to continue .......");
 	fp =fopen(curlib,"rt");
 	int ch=0;
 	if (fp != NULL)
@@ -985,6 +905,8 @@ void intro()
 			}//end of file acheived
 	fclose(fp);
 	}//file available
+
+	getch();
 }//end of inreoduction
 
 void writeani(const char *fname)

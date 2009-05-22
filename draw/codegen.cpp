@@ -9,6 +9,9 @@
 
 void ccoder(char *);
 void copy_files();
+void bcoder()
+{
+}
 
 int main(int argc,char *argv[])
 {
@@ -19,13 +22,13 @@ return 0;
 
 void ccoder(char *path)
 {
+	strcat(path,"\\");
 	char *path1 =(char *)calloc(1,15);
 	if (!path1)
 		{
 		printf("ERROR");
 		getch();
 		}
-	strcat(path,"\\");
 	strcpy(path1,path);
 
 	FILE *fp,*prog;

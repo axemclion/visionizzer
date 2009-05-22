@@ -1,4 +1,3 @@
-# define GRID_COLOR 8
 void cus_pattern();
 
 extern int __grid;
@@ -26,12 +25,12 @@ void o_circle(int type);
 void o_text();
 void paint();
 void coder();
-void error(const char*msg,char *,int);
+void error(const char*msg);
 
 void intro(void)
 {
 int gdriver = VGA, gmode=VGAMED, errorcode;
-	initgraph(&gdriver, &gmode, "grfx\\");
+	initgraph(&gdriver, &gmode, "");
 //	if (errorcode != grOk)
 //		initgraph(&gdriver, &gmode, "");
 
@@ -42,26 +41,25 @@ if (errorcode != grOk)  /* an error occurred */
   printf("Press any key to halt:");
   getch();
   exit(1); /* terminate with an error code */
-}
-}
+}}
 
-void draw_grid(int grid,int color=GRID_COLOR,int linestyle=0)
+void draw_grid(int grid,int color=8,int linestyle=0)
 {
+	mouse_change(_TARGET_CUR);
 	bind_mouse(0,12,getmaxx(),getmaxy());
 	setcolor(15);
 	rectangle(0,0,getmaxx(),getmaxy());
 	if (__grid == 0) return;
 	if (grid < 0) grid = 1;
 	setcolor(color);
-	linestyle = 4;
-	setlinestyle(linestyle,21845,1);
+	setlinestyle(linestyle,1,1);
 	hide_mouse();
 	for (int i=0;i< getmaxx();i+=grid)
 	{
 		line (i,0,i,getmaxy());
 		line (0,i,getmaxx(),i);
 	}
-	setlinestyle(0,0,1);
+	setlinestyle(1,0,3);
 	for (i=0;i< getmaxx();i+=4*grid)
 	{
 		line (i,0,i,getmaxy());
@@ -77,22 +75,35 @@ void StatusLine( const char *msg,int line,char *file)
 {
 	fflush(stdin);
 	setlinestyle(0,0,0);
-	loadbmp("status.vsn",1,0);
+	setfillstyle(SOLID_FILL,7);
+	bar(1,1,566,10);
+	setcolor(8);
+	rectangle(1,1,566,10);
 	setcolor(15);
 	rectangle(1,10,566,10);
 	rectangle(566,1,566,10);
 	settextstyle(0,0,1);
-	setcolor(8);outtextxy(20,3,msg);
-	setcolor(15);outtextxy(19,2,msg);
+	setcolor(8);outtextxy(10,3,msg);
+	setcolor(15);outtextxy(9,2,msg);
 	# ifdef AXE
-		gotoxy(35,1);printf("%3d in %s",line,file);
+		gotoxy(1,1);printf("%d in %s",line,file);
 	# endif
 }
 
+void error(const char *msg)
+{
+	fprintf(stderr,"ERROR in module: %s",msg);
+  //	fprintf(stderr,"Line Number : %d",line);
+  //	fprintf(stderr,"File Name   : %s",file);
+	getch();
+	closegraph();
+	exit(1);
+}
 void properties()
 {
-loadcur("cursor","attr",9,7);
 click();
+char word[64] = {255,31,255,39,255,89,127,174,159,183,239,219,7,220,255,236,127,237,135,245,155,245,173,249,182,253,218,255,236,255,240,255,0,224,0,216,0,166,128,81,96,72,16,36,248,35,0,19,128,18,120,10,100,10,82,6,73,2,37,0,19,0,15,0};
+mouse_change(word);
 StatusLine("Click on properties to change them, outside to exit properties box.",__LINE__,__FILE__);
 mouse_status mouse=click();
 int toolx=mouse.x;
@@ -103,10 +114,38 @@ if (toolx <10) toolx=10;
 if (tooly <10) tooly=10;
 
 char *buffer=(char *)malloc(imagesize(0,0,120,160));
-if (!buffer) error("Properties\nUnable to allocate memory for screen save",__FILE__,__LINE__);
+if (!buffer) error("Properties\nUnable to allocate memory for screen save");
 hide_mouse();
 getimage(toolx,tooly,toolx+120,tooly+160,buffer);
-loadbmp("prop.vsn",toolx,tooly);
+
+
+/*******draw buttons **********/
+setfillstyle(SOLID_FILL,8);
+setlinestyle(0,0,1);
+bar(toolx,tooly,toolx+120,tooly+160);
+
+setcolor(14);
+setcolor(11);
+for (int iy=1;iy < 160;iy=iy+20)
+line (toolx,tooly+iy,toolx+120,tooly+iy);
+line (toolx+85,tooly,toolx+85,tooly+160);
+setcolor(8);
+line (toolx+85,tooly+101,toolx+85,tooly+119);
+
+setcolor(15);
+rectangle(toolx,tooly,toolx+120,tooly+160);
+
+settextstyle(0,0,1);
+setcolor(14);
+outtextxy(toolx+5,tooly+6,"Color");
+outtextxy(toolx+5,tooly+6+20,"Thickness");
+outtextxy(toolx+5,tooly+6+40,"Linestyle");
+outtextxy(toolx+5,tooly+6+60,"BackColor");
+outtextxy(toolx+5,tooly+6+80,"Pattern");
+outtextxy(toolx+5,tooly+6+100,"Change pattern");
+outtextxy(toolx+5,tooly+6+120,"FontName");
+outtextxy(toolx+5,tooly+6+140,"Size");
+
 click();
 position_mouse(toolx+30,tooly+30);
 show_mouse();
@@ -114,7 +153,7 @@ mouse =status();
 setcolor(color);
 
 /*******drawing properties ********/
-
+/*color*/
 setfillstyle(SOLID_FILL,color);
 bar (toolx+95,tooly+5,toolx+110,tooly+15);
 // thickness
@@ -135,7 +174,15 @@ if (fillpattern == 12)
 	setfillpattern(cuspattern ,7);
 	bar (toolx+95,tooly+85,toolx+110,tooly+95);
 	} // for customer defined pattern
+
 //fontname and size
+settextstyle(0,HORIZ_DIR,1);
+char *sr=(char*)malloc(sizeof sr);
+sprintf(sr,"%02d",font);
+outtextxy(toolx+100,tooly+125,sr);
+sprintf(sr,"%02d",size);
+outtextxy(toolx+100,tooly+145,sr);
+free(sr);
 int quit=0;
 while (quit==0)
 {
@@ -163,7 +210,7 @@ while (quit==0)
 		else if (thickness==3) thickness =1;
 
 		setlinestyle(0,0,3);
-		setcolor(7);
+		setcolor(8);
 		line (toolx+95,tooly+25,toolx+110,tooly+35);
 		setcolor(15);
 		setlinestyle(0,0,thickness);
@@ -176,7 +223,7 @@ while (quit==0)
 
 		if (line_style > 3) line_style = 0;
 
-		setcolor(7);setlinestyle(0,0,1);
+		setcolor(8);setlinestyle(0,0,1);
 		line (toolx+95,tooly+45,toolx+110,tooly+55);
 		setlinestyle(line_style,0,1);setcolor(15);
 		line (toolx+95,tooly+45,toolx+110,tooly+55);
@@ -200,31 +247,22 @@ while (quit==0)
 		bar (toolx+95,tooly+85,toolx+110,tooly+95);
 		if (fillpattern == 12)
 		{
-				setfillpattern(cuspattern ,8);
+				setfillpattern(cuspattern ,7);
 				bar (toolx+95,tooly+85,toolx+110,tooly+95);
 		}
 		break; //end of fillpattern
-		case 5:
 		case 6://font
-
 		if (mouse.button == LEFT_CLICK) 	font++;
 		if (mouse.button == RIGHT_CLICK) 	font--;
 
 		if (font>12) font = 0;
-		setfillstyle(1,7);
-		setfillstyle(SOLID_FILL,7);
-		bar (toolx+1,tooly+104,toolx+118,tooly+138);
+		setfillstyle(1,8);
+		bar (toolx+86,tooly+122,toolx+119,tooly+139);
 		settextstyle(0,0,1);
 		{
-	settextjustify(CENTER_TEXT,CENTER_TEXT);
-	char *sr=(char*)malloc(100);
-	sprintf(sr,"Font:%d",font);
-	if (font == 10)
-		settextstyle(0,0,2);
-	else
-		settextstyle(font,0,2);
-	outtextxy(toolx+60,tooly+120,sr);
-	settextjustify(LEFT_TEXT,TOP_TEXT);
+	char *sr=(char*)malloc(sizeof sr);
+	sprintf(sr,"%02d",font);
+	outtextxy(toolx+100,tooly+125,sr);
 	free(sr);
 		}//case 6
 		break;
@@ -234,24 +272,28 @@ while (quit==0)
 		if (mouse.button == LEFT_CLICK) 	size++;
 
 		if (size>14) size = 0;
-		setfillstyle(1,7);
-		bar (toolx+90,tooly+145,toolx+115,tooly+155);
+		setfillstyle(1,8);
+		bar (toolx+86,tooly+142,toolx+119,tooly+159);
 
 		settextstyle(0,0,1);
 		{
-	char *sr=(char*)malloc(100);
+	char *sr=(char*)malloc(sizeof sr);
 	sprintf(sr,"%02d",size);
 	outtextxy(toolx+100,tooly+145,sr);
 	free(sr);
 	break;
 		}//case 7
-	}//end of switchcase
+		case 5:
+		cus_pattern();
+		break;//end of custoemr pattern
+		}//end of switchcase
 	}//end of correct area click
 	else
 		quit = 1;
 
 	show_mouse();
 	}//end of left click if
+
 }//end of while
 
 click();
@@ -260,7 +302,7 @@ putimage(toolx,tooly,buffer,COPY_PUT);
 show_mouse();
 free(buffer);
 StatusLine("Strike F1 for Help",__LINE__,__FILE__);
-loadcur("cursor","word",0,0);
+mouse_change(_TARGET_CUR);
 }//end of properties
 
 
@@ -275,11 +317,22 @@ if (tooly+40 > getmaxy()) tooly=getmaxy()-45;
 if (toolx <10) toolx=10;
 if (tooly <10) tooly=10;
 
-char *buffer=(char *)malloc(imagesize(0,0,137,72));
-if (!buffer) error("ColorCard\nUnable to allocate enough memory for screen save",__FILE__,__LINE__);
+char *buffer=(char *)malloc(imagesize(0,0,160,40));
+if (!buffer) error("ColorCard\nUnable to allocate enough memory for screen save");
 hide_mouse();
-getimage(toolx,tooly,toolx+137,tooly+71,buffer);
-loadbmp("color.vsn",toolx,tooly);
+getimage(toolx,tooly,toolx+160,tooly+40,buffer);
+
+/****** draw buttons *******/
+setlinestyle(SOLID_LINE,0,1);
+setcolor(15);
+int c=0;
+for (int y=0;y<2;y++){
+for (int x=0;x<8;x++){
+setfillstyle(SOLID_FILL,c++);
+bar(toolx+x*20,tooly+y*20,toolx+x*20+20,tooly+y*20+20);
+}}
+rectangle(toolx,tooly,toolx+160,tooly+40);
+
 /********processing ********/
 show_mouse();
 click();
@@ -291,14 +344,12 @@ mouse=click();
 if (mouse.button == LEFT_CLICK)
 {
 	result = -1;
-	if (inarea(mouse.x,mouse.y,toolx,tooly,toolx+136,tooly+71))
-		result = -2;
-	if (inarea(mouse.x,mouse.y,toolx+131,tooly+58,toolx+4,tooly+27))
+	if (mouse.x>toolx && mouse.y > tooly && mouse.x <toolx+160 && mouse.y <tooly+40)
 	{
-	mouse.x=(mouse.x-toolx-4)/16;
-	mouse.y=(mouse.y-tooly-27)/16;
+	mouse.x=(mouse.x-toolx)/20;
+	mouse.y=(mouse.y-tooly)/20;
 	result=mouse.x+ (mouse.y*8);
-	}//end of in area
+	}//end of LEFT_click
 }//end of LEFT_click
 }//end of while
 
@@ -306,128 +357,6 @@ hide_mouse();
 free(buffer);
 putimage(toolx,tooly,buffer,COPY_PUT);
 show_mouse();
-if (result > 15)
-	result = 15;
 return result;
 }//end of color card
 
-int sreplace(char *target,char *source,int start,int end)
-{
-	char *buffer = (char *)calloc(1,100);
-	char *s;
-	if (buffer == NULL)
-		return -1;
-	strncpy(buffer,target,start);
-	strcat(buffer,source);
-	s = target+end;
-	int result = strlen(buffer);
-	strcat(buffer,s);
-	strcpy(target,buffer);
-	free(buffer);
-	return result;
-}//end of replacing
-
-quad mark()
-{
-	click();
-	hide_mouse();
-	setactivepage(1);
-	cleardevice();
-	draw_grid(resolution);
-	redraw();
-	setactivepage(0);
-	setcolor(color);
-	int sx=0,sy=0,ex=0,ey=0;
-	StatusLine("Marking a region",__LINE__,__FILE__);
-	mouse_status mouse;
-	show_mouse();
-	mouse = click();
-	mouse.button=0;
-	StatusLine("Click to mark the start of selection",__LINE__,__FILE__);
-	while (mouse.button == 0)
-	{
-		gotoxy(72,1);printf("(%03d,%03d)",mouse.x,mouse.y);
-		mouse=click();
-		if (mouse.button==LEFT_CLICK)
-		{sx=mouse.x;sy=mouse.y;}
-		if (mouse.button == MIDDLE_CLICK)
-		{
-		position_mouse(mouse.x-(mouse.x % resolution),mouse.y - (mouse.y%resolution));
-		mouse.button=0;
-		}
-		if (mouse.button == RIGHT_CLICK || mouse.button == BOTH_CLICK) mouse.button =0;
-	}//end of while
-	click();
-	setcolor(color);
-	setlinestyle(line_style,0,thickness);
-	mouse.button=0;
-	int x1,y1;
-	StatusLine("Click to mark the end of selection",__LINE__,__FILE__);
-	hide_mouse();
-	setcolor(color);
-	setlinestyle(1,0,1);
-
-
-	while (!mouse.button)
-	{
-		x1=mouse.x;y1=mouse.y;
-		mouse=status();
-		gotoxy(72,1);printf("(%03d,%03d)",mouse.x,mouse.y);
-		if (mouse.x < 3) mouse.x =3;
-		if (mouse.y < 3) mouse.y =3;
-		ex=mouse.x;
-		ey=mouse.y;
-		setcolor(10);
-		rectangle(sx,sy,ex,ey);
-
-//		if (mouse.x!=x1 || mouse.y !=y1)
-		{
-			char *uffer = (char *)malloc(imagesize(0,0,10,60));
-			char *buffer = (char *)malloc(imagesize(0,0,10,60));
-			setfillstyle(SOLID_FILL,3);
-			for (int a=min(sx,x1);a<=max(sx,x1);a=a+60)
-				{
-			if (a+58 > getmaxx())
-			{
-			setactivepage(1);
-			getimage(getmaxx()-58,sy-1,getmaxx()-1,sy+1,buffer);
-			getimage(getmaxx()-58,y1-1,getmaxx()-1,y1+1,uffer);
-			setactivepage(0);
-			putimage(getmaxx()-58,sy-1,buffer,COPY_PUT);
-			putimage(getmaxx()-58,y1-1,uffer,COPY_PUT);
-			}//end of x out of bounds
-				setcolor(color);
-				setactivepage(1);
-				getimage(a-1,sy-1,a+58,sy+1,buffer);
-				getimage(a-1,y1-1,a+58,y1+1,uffer);
-				setactivepage(0);
-				putimage(a-1,sy-1,buffer,COPY_PUT);
-				putimage(a-1,y1-1,uffer,COPY_PUT);
-				}
-			for (a=min(sy,y1);a<=max(sy,y1);a=a+60)
-				{
-				setactivepage(1);
-				getimage(sx-1,a-1,sx+1,a+58,buffer);
-				getimage(x1-1,a-1,x1+1,a+58,uffer);
-				setactivepage(0);
-				putimage(sx-1,a-1,buffer,COPY_PUT);
-				putimage(x1-1,a-1,uffer,COPY_PUT);
-				}
-			free(uffer);
-			free(buffer);
-			}//end of rectangle selection
-	if (mouse.button ==MIDDLE_CLICK)
-	{
-		position_mouse(mouse.x-(mouse.x % resolution),mouse.y - (mouse.y%resolution));
-		mouse.button=0;
-	}//end of middle click
-}//end of second while
-	quad q;
-	q.x1 = sx;
-	q.x2 = ex;
-	q.y1 = sy;
-	q.y2 = ey;
-	show_mouse();
-	loadcur("cursor","word",0,0);
-	return q;
-}//end of function

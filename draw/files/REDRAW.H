@@ -3,11 +3,22 @@
 
 void drawobj(const char *name);
 
+int max(int a,int b)
+{
+        return (a>b) ? a:b;
+}
+
+int min(int a,int b)
+{
+        return (b>a) ? a:b;
+}
+
+
 void draw_all()
 {
 hide_mouse();
 	FILE *fp;
-	if ((fp = fopen("\\cmd.$$$","rt")) != NULL)
+	if ((fp = fopen("cmd.$$$","rt")) != NULL)
 	{
 	char *buffer = (char *)calloc(1,100);
 	while (!feof(fp))
@@ -15,7 +26,7 @@ hide_mouse();
 		fscanf(fp,"%s",buffer);
 		if (strcmp(buffer,"**********") != 0 && strcmp(buffer,"") != 0)
 			drawobj(buffer);
-			while (strcmp(buffer,"**********")!=0 && !feof(fp))
+			while (strcmp(buffer,"**********")!=0)
 				fscanf(fp,"%s",buffer);
 		}//end of file
 	free(buffer);
@@ -60,7 +71,7 @@ void drawobj(const char *name)
 	if (nme[i] == NULL) error("Not enough memory for val[i]");
 	}
 	FILE *fp;
-	fp = fopen("\\cmd.$$$","rt");
+	fp = fopen("cmd.$$$","rt");
 	if (fp == NULL) error("Error opening file in draw object");
 
 while (!feof(fp))
@@ -92,11 +103,11 @@ fclose (fp);
 switch (*type)
 	{
 	case 'l':
-		fp=fopen("lblobj.vbc","rt");break;
+                fp=fopen("lblobj.vbc","rt");break;
 	case 'c':
-		fp=fopen("cmdobj.vbc","rt");break;
+                fp=fopen("cmdobj.vbc","rt");break;
 	case 't':
-		fp=fopen("txtobj.vbc","rt");break;
+                fp=fopen("txtobj.vbc","rt");break;
 	default :
 		fp = NULL;
 	}//end of switch case
@@ -104,6 +115,7 @@ free(type);
 i=pctr = 0;
 strcpy(buffer,NULL);
 
+//		if (fp==NULL) error("Error opening file for redrawing");
 		while (!feof(fp) && fp != NULL)
 		{
 			fscanf(fp,"%s",buffer);
@@ -130,12 +142,12 @@ strcpy(buffer,NULL);
 					{loop = 4;i=6;}
 				else if (strncmp(buffer,"rectangle",9) == 0)
 					{loop = 4;i=11;}
+				else if (strncmp(buffer,"rectangle",9) == 0)
+					{loop = 4;i=11;}
 				else if (strncmp(buffer,"ellipse",7) == 0)
 					{loop = 6;i=9;}
 				else if (strncmp(buffer,"sector",6) == 0)
 					{loop = 6;i=8;}
-				else if (strncmp(buffer,"settextjustify",14) == 0)
-					{loop = 2;i=16;}
 				i--;
 				int prop[7];
 				for (int c=0;c < loop;c++)
@@ -167,8 +179,6 @@ strcpy(buffer,NULL);
 
 				if (strncmp(buffer,"setcolor",8) == 0)
 					setcolor(prop[0]);
-				else if (strncmp(buffer,"settextjustify",14) == 0)
-					settextjustify(prop[0],prop[1]);
 				else if (strncmp(buffer,"setfillstyle",12) == 0)
 					setfillstyle(prop[0],prop[1]);
 				else if (strncmp(buffer,"settextstyle",12) == 0)
@@ -200,9 +210,9 @@ strcpy(buffer,NULL);
 					}//end of writin text
 				}//end of if pctr;
 		}//end of !feof(fp)....
-	settextjustify(LEFT_TEXT,TOP_TEXT);
 if (fp != NULL) fclose(fp);
 free(buffer);
+
 	for (i=0;i < 10;i++)
 	{
 	free(nme[i]);

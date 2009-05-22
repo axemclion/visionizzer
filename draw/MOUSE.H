@@ -9,11 +9,6 @@
 # define max(a,b) (a>b ? a:b)
 # define min(a,b) (a<b ? a:b)
 
-struct quad
-{
-	int x1,x2,y1,y2;
-};
-
 int inarea(int a,int b,int x,int y,int x1,int y1)
 {
 if (a > min(x1,x) && a < max(x1,x) && b> min(y,y1) && b < max(y1,y))
@@ -21,6 +16,9 @@ if (a > min(x1,x) && a < max(x1,x) && b> min(y,y1) && b < max(y1,y))
 else
 	return 0;
 }
+
+char _TEXT_CUR[64] = {0x0,0x0,0xfd,0xbf,0xfb,0xdf,0x7,0xe0,0xdf,0xfb,0xdf,0xfb,0xdf,0xfb,0x5f,0xfa,0x5f,0xfa,0xdf,0xfb,0xdf,0xfb,0xdf,0xfb,0x9f,0xf9,0x3f,0xfc,0x7f,0xfe,0x7f,0xfe,0xff,0xff,0x2,0x40,0x4,0x20,0xf8,0x1f,0x20,0x4,0x20,0x4,0x20,0x4,0xa0,0x5,0xa0,0x5,0x20,0x4,0x20,0x4,0x20,0x4,0x60,0x6,0xc0,0x3,0x80,0x1,0x80,0x1};
+char _TARGET_CUR[64] = {127,254,63,252,15,240,71,226,115,206,243,207,249,159,224,7,224,7,249,159,243,207,115,206,71,226,15,240,63,252,127,254,128,1,192,3,176,13,136,17,4,32,4,32,2,64,143,241,143,241,2,64,4,32,4,32,136,17,176,13,192,3,128,1};
 
 int mouse_present()
 {
@@ -163,9 +161,3 @@ if (times-basetime > del)
 	times =t.ti_sec *100+t.ti_hund+t.ti_min*6000+t.ti_hour*360000;
 	}//end of animation
 }//end of animation
-
-void revert()
-{
-char normal[64] = {255,63,255,31,255,15,255,7,255,3,255,1,255,0,127,0,63,0,31,0,255,1,255,16,255,48,127,248,127,248,127,252,0,0,0,64,0,96,0,112,0,120,0,124,0,126,0,127,128,127,0,124,0,108,0,70,0,6,0,3,0,3,0,0};
-mouse_change(normal,0,0);
-}

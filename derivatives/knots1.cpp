@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dos.h>
-#include d:\prog\c\mouse.h"
-
+#include <mouse.h>
 # define DEL 3
+
 
 int x1,y1;
 int grid[9];
@@ -29,6 +29,7 @@ char word[8][64] = {
 void messagebox(const char *msg1,char *msg2="")
 {
 	fflush(stdin);
+	setlinestyle(0,0,1);
 	hide_mouse();
 	setcolor(8);
 	for (int i=10;i < 200 ;i++)
@@ -73,6 +74,7 @@ void draw()
 		getch();
 		exit(1);
 		}
+
 setcolor(15);
 setlinestyle(0,0,1);
 setfillstyle(SOLID_FILL,7);
@@ -109,24 +111,25 @@ setcolor(8);
 outtextxy(x1+45,y1+4,"Tic-Tac-Toe");
 }//end of redrawing of the 2-D objects
 void putmark(int,int);
+
 void userget()
 {
 	mouse_status temp ={0,0,0};
 	mouse_status mouse={0,0,0};
 	while (mouse.button != 0)
 		{
-		anim(word,8,DEL);
 		mouse = status();
+		anim(word,8,DEL);
 		}
 	while (mouse.button == 0)
 		{
-		anim(word,8,DEL);
 		mouse = status();
+		anim(word,8,DEL);
 		}
 	while (temp.button != 0)
 		{
-		anim(word,8,DEL);
 		temp = status();
+		anim(word,8,DEL);
 		}
 	mouse.x=(mouse.x-x1)/40;
 	mouse.y=(mouse.y-y1)/40;
@@ -154,8 +157,6 @@ void userget()
 	}//end of switch case
 	if (grid[pos] != 0)
 		{
-		mouse.button=0;
-		gotoxy(1,1);
 		messagebox("You cannot place ","counter here ...");
 		userget();
 		}
@@ -169,30 +170,54 @@ click();
 
 void has_won()
 {
+	setlinestyle(2,0,3);
 	int result=0;
 	if (grid[0] == grid [1] && grid[1] == grid[2] && grid[0] != 0)
+		{
+		line (x1+40,y1+60,x1+160,y1+60);
 		result =grid[0];
+		}
 	if (grid[3] == grid [4] && grid[4] == grid[5] && grid[5] != 0)
+		{
+		line (x1+40,y1+100,x1+160,y1+100);
 		result =grid[3];
+		}
 	if (grid[6] == grid [7] && grid[7] == grid[8] && grid[8] != 0)
+		{
+		line (x1+40,y1+120,x1+160,y1+120);
 		result =grid[6];
+		}
 
 	if (grid[0] == grid [3] && grid[3] == grid[6] && grid[0] != 0)
+		{
+		line (x1+60,y1+40,x1+60,y1+160);
 		result =grid[0];
-	if (grid[1] == grid [4] && grid[4] == grid[7] && grid[7] != 0)
+		}
+	if	(grid[1] == grid [4] && grid[4] == grid[7] && grid[7] != 0)
+		{
+		line (x1+100,y1+40,x1+100,y1+160);
 		result =grid[1];
+		}
 	if (grid[2] == grid [5] && grid[5] == grid[8] && grid[5] != 0)
+		{
+		line (x1+160,y1+40,x1+160,y1+160);
 		result =grid[2];
+		}
 
 	if (grid[0] == grid [4] && grid[4] == grid[8] && grid[4] != 0)
+		{
+		line (x1+40,y1+40,x1+160,y1+160);
 		result =grid[4];
+		}
 	if (grid[2] == grid [4] && grid[4] == grid[6] && grid[4] != 0)
+		{
+		line (x1+40,y1+160,x1+160,y1+40);
 		result =grid[4];
+		}
+
 	if (result != 0)
 	{
 		messagebox("The Computer has","won the game");
-
-
 		getch();
 		closegraph();
 		exit(0);
@@ -226,12 +251,13 @@ int rot(int pos1)
 	}//end of switch case
 return pos;
 }
+
 void putmark(int player,int pos1)
 {
+anim(word,8,5);
 grid[pos1] = player;
 hide_mouse();
 setlinestyle(0,0,0);
-
 int pos=pos1;
 switch (rotate)
 {
@@ -305,7 +331,7 @@ void force_win()
 	oneof(0,4,8);
 	oneof(2,4,6);
 }//end of force win
-void save(int a,int b,int c)
+int save(int a,int b,int c)
 {
 	int result=-1;
 	if (grid[a] == grid[b] && grid[a] == 1 && grid[c] == 0)
@@ -316,122 +342,141 @@ void save(int a,int b,int c)
 		result = b;
 	if (result != -1)
 		putmark(2,result);
+	return result;
 }//end of game
 
-void savegame()
+int savegame()
 {
-	save(0,1,2);
-	save(3,4,5);
-	save(6,7,8);
+	int result = 0;
+	if (save(0,1,2) != -1) result = 1;
+	if (save(3,4,5) != -1) result = 1;
+	if (save(6,7,8) != -1) result = 1;
 
-	save(0,3,6);
-	save(1,4,7);
-	save(2,5,8);
+	if (save(0,3,6) != -1) result = 1;
+	if (save(1,4,7) != -1) result = 1;
+	if (save(2,5,8) != -1) result = 1;
 
-	save(0,4,8);
-	save(2,4,6);
+	if (save(0,4,8) != -1) result = 1;
+	if (save(2,4,6) != -1) result = 1;
+	return result;
+}
+void putanywhere()
+{
+		for (int i=0;i < 9;i++)
+			if (grid[i] == 0)
+				{
+				putmark(2,i);
+				break;
+				}
 }
 
 int main()
 {
-randomize();
-rotate = rand() %4;
-x1=100;
-y1=100;
-for (int i=0;i <9;i++)
-	grid[i] =0;
-draw();
-mouse_present();
-show_mouse();
-char w[64] = {0x3f,0xfc,0xdf,0xfb,0x6f,0xf6,0xb7,0xed,0xdb,0xdb,0x6d,0xb6,0xb6,0x6d,0x5a,0x5a,0x5a,0x5a,0xb6,0x6d,0x6d,0xb6,0xdb,0xdb,0xb7,0xed,0x6f,0xf6,0xdf,0xfb,0x3f,0xfc,0xc0,0x3,0x20,0x4,0x90,0x9,0x48,0x12,0x24,0x24,0x92,0x49,0x49,0x92,0xa5,0xa5,0xa5,0xa5,0x49,0x92,0x92,0x49,0x24,0x24,0x48,0x12,0x90,0x9,0x20,0x4,0xc0,0x3};
-mouse_change(w);
-bind_mouse(x1+40,y1+40,x1+140,y1+140);
-grid[0] = 2;
-putmark(2,0);
-userget();
-
-if (grid[1] == 1 || grid[3] == 1)
+	rotate = 0;
+	x1=y1=100;
+	draw();
+	mouse_present();
+	char w[64] = {0x3f,0xfc,0xdf,0xfb,0x6f,0xf6,0xb7,0xed,0xdb,0xdb,0x6d,0xb6,0xb6,0x6d,0x5a,0x5a,0x5a,0x5a,0xb6,0x6d,0x6d,0xb6,0xdb,0xdb,0xb7,0xed,0x6f,0xf6,0xdf,0xfb,0x3f,0xfc,0xc0,0x3,0x20,0x4,0x90,0x9,0x48,0x12,0x24,0x24,0x92,0x49,0x49,0x92,0xa5,0xa5,0xa5,0xa5,0x49,0x92,0x92,0x49,0x24,0x24,0x48,0x12,0x90,0x9,0x20,0x4,0xc0,0x3};	show_mouse();
+	mouse_change(w);
+	bind_mouse(x1+40,y1+40,x1+140,y1+140);
+	userget();
+	if (grid[4] == 1)
 	{
-	if (grid[1] == 1)
-		putmark(2,6);
-	else
-		putmark(2,2);
-	userget();
-	force_win();
-	randomize();
-	randomize();
-	if (rand() %2 == 1)
-		putmark(2,4);
-	else
-		putmark(2,8);
-	userget();
-	force_win();
+		putanywhere();
+
+		userget();
+		force_win();
+		if (savegame() == 0)
+		{
+			if (grid[0] == 1 || grid [8] == 1)
+				putmark(2,6);
+			else if (grid[6] == 1 || grid[2] == 1)
+				putmark(2,0);
+			else
+				putanywhere();
+		}
+
+		userget();
+		force_win();
+		if (savegame() == 0)
+			putanywhere();
+		userget();
+		force_win();
+		if (savegame() == 0)
+			putanywhere();
+		userget();
 	}
-
-if (grid [2] == 1 || grid[6] == 1)
-{
-	if (grid[2] == 1)
-		putmark(2,6);
-	else
-		putmark(2,2);
-	userget();
-	force_win();
-	putmark(2,8);
-	userget();
-	force_win();
-}
-
-if (grid[8] == 1)
-{
-	putmark(2,2);
-	userget();
-	force_win();
-	putmark(2,6);
-	userget();
-	force_win();
-}
-
-if (grid[5] == 1 || grid[7] == 1)
-{
-	if (grid[5] == 1)
-		putmark(2,6);
-	else
-		putmark(2,2);
-	userget();
-	force_win();
-	putmark(2,4);
-	userget();
-	force_win();
-}
-
-if (grid[4] == 1)
-{
-	putmark(2,8);
-	userget();
-	force_win();
-	if (grid[2] ==1 )
+	else if (grid[1] == 1 || grid[3] == 1 || grid [5]== 1 || grid [7] == 1)
+	{
+		putmark(2,4);
+		userget();
+		if (savegame()==0)
 		{
-		putmark(2,6);
-		userget();
-		force_win();
+			if (grid[3] == 1 || grid[1] == 1)
+				putmark(2,0);
+			else if (grid[5] == 1 || grid[7] == 1)
+				putmark(2,8);
+			else
+				putanywhere();
 		}
-	if (grid[6] == 1)
-		{
-		putmark(2,2);
 		userget();
 		force_win();
-		}
-		savegame();
+		if (savegame()==0)
+			putanywhere();
 		userget();
 		force_win();
-		savegame();
-		userget();force_win();
-		savegame();
+		if (savegame()==0)
+			putanywhere();
+		userget();
+	}//end of second possibility
+	else if (grid[0] == 1 || grid [2] == 1 || grid [6] == 1 || grid [8] == 1)
+	{
+		putmark(2,4);
+		userget();
+		if (savegame() == 0)
+			{
+				if (grid[0] == 1 && grid[8] == 1)
+					putmark(2,1);
+				else if (grid[6] == 1 && grid[2] == 1)
+					putmark(2,7);
+				else if (grid[0] == 1)
+					{
+					if (grid[7] == 1) putmark(2,6);
+					else if (grid[5] == 1) putmark (2,2);
+					else putanywhere();
+					}
+				else if (grid[2] == 1)
+					{
+					if (grid[7] == 1) putmark(2,8);
+					else if (grid[3] == 1) putmark (2,0);
+					else putanywhere();
+					}
+				else if (grid[6] == 1)
+					{
+					if (grid[1] == 1) putmark(2,0);
+					else if (grid[5] == 1) putmark (2,8);
+					else putanywhere();
+					}
 
-}//end of grid
-
-messagebox("Great Playing,the ","game is drawn");
-closegraph();
-return 0;
-
-}                                                                                                                                                                                                                                                                                               
+				else if (grid[8] == 1)
+					{
+					if (grid[1] == 1) putmark(2,2);
+					else if (grid[3] == 1) putmark (2,6);
+					else putanywhere();
+					}
+			}
+	userget();
+	force_win();
+	if (savegame() == 0)
+		putanywhere();
+	userget();
+	force_win();
+	if (savegame() == 0)
+		putanywhere();
+	userget();
+	}//end of corners
+	messagebox("The game has ended","in a draw");
+	getch();
+	closegraph();
+	return 0;
+}

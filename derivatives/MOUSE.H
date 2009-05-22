@@ -9,10 +9,14 @@
 # define max(a,b) (a>b ? a:b)
 # define min(a,b) (a<b ? a:b)
 
-struct quad
+/*int inarea(int a,int b,quad q)
 {
-	int x1,x2,y1,y2;
-};
+if (a > min(q.x1,q.x2) && a < max(q.x1,q.x2) && b> min(q.y2,q.y1) && b < max(q.y1,q.y2))
+	return 1;
+else
+	return 0;
+} */
+
 
 int inarea(int a,int b,int x,int y,int x1,int y1)
 {
@@ -163,9 +167,3 @@ if (times-basetime > del)
 	times =t.ti_sec *100+t.ti_hund+t.ti_min*6000+t.ti_hour*360000;
 	}//end of animation
 }//end of animation
-
-void revert()
-{
-char normal[64] = {255,63,255,31,255,15,255,7,255,3,255,1,255,0,127,0,63,0,31,0,255,1,255,16,255,48,127,248,127,248,127,252,0,0,0,64,0,96,0,112,0,120,0,124,0,126,0,127,128,127,0,124,0,108,0,70,0,6,0,3,0,3,0,0};
-mouse_change(normal,0,0);
-}

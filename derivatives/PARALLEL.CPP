@@ -5,24 +5,19 @@
 #include <conio.h>
 #include <dos.h>
 #include <string.h>
-#include "d:\prog\c\mouse.h"
-#include "d:\prog\c\button.cls"
-#include "d:\prog\c\bmploade.cpp"
-
-# define B 9
-# define F 15
-# define P 10
-# define M 56/2
+#include <mouse.h>
+#include <button.cls>
 
 # define READ_MASK 0x04
 # define MAX 11
 
-char word[5][64] = {
- {255,127,255,191,255,207,255,199,15,224,240,240,254,240,255,240,255,247,255,247,255,247,255,247,255,251,255,251,255,251,255,249,0,128,0,64,0,48,0,56,240,31,15,15,1,15,1,15,1,8,7,8,8,8,8,8,248,4,136,5,0,5,0,6},
- {255,127,255,191,255,207,255,199,15,224,240,240,254,240,255,240,255,247,255,247,255,247,255,247,255,251,255,251,255,251,255,249,0,128,0,64,0,48,0,56,240,31,15,15,1,15,1,15,1,8,1,8,14,8,120,8,64,4,64,4,64,4,192,7},
- {255,127,255,191,255,207,255,199,15,224,240,240,254,240,255,240,255,247,255,247,255,247,255,247,255,251,255,251,255,251,255,249,0,128,0,64,0,48,0,56,240,31,15,15,1,15,1,15,1,8,15,8,8,8,56,8,224,5,0,5,0,5,0,6},
- {255,127,255,191,255,207,255,199,15,224,240,240,254,240,255,240,255,247,255,247,255,247,255,247,255,251,255,251,255,251,255,249,0,128,0,64,0,48,0,56,240,31,15,15,1,15,2,15,2,8,2,8,2,8,30,8,48,4,224,4,0,5,0,6},
- {255,127,255,191,255,207,255,199,15,224,240,240,254,240,255,240,255,247,255,247,255,247,255,247,255,251,255,251,255,251,255,249,0,128,0,64,0,48,0,56,240,31,15,15,1,15,1,15,1,8,231,8,184,8,128,8,128,4,128,5,0,5,0,6}};
+char word[6][64] = {
+ {255,63,255,95,255,167,255,192,127,207,191,239,223,239,239,239,247,247,251,251,241,253,226,254,70,255,141,255,219,255,231,255,0,192,0,160,0,88,0,63,128,48,64,16,32,16,16,16,8,8,4,4,14,2,29,1,185,0,114,0,36,0,24,0},
+ {255,63,255,95,255,167,255,192,127,207,191,239,223,239,239,239,231,247,195,251,137,253,30,254,62,255,189,255,219,255,231,255,0,192,0,160,0,88,0,63,128,48,64,16,32,16,16,16,24,8,60,4,118,2,225,1,193,0,66,0,36,0,24,0},
+ {255,63,255,95,255,167,255,192,127,207,191,239,223,239,143,239,23,247,59,250,125,252,254,254,126,255,189,255,219,255,231,255,0,192,0,160,0,88,0,63,128,48,64,16,32,16,112,16,232,8,196,5,130,3,1,1,129,0,66,0,36,0,24,0},
+ {255,63,255,95,255,167,255,192,127,207,63,232,223,232,239,233,247,243,251,251,253,253,254,254,126,255,189,255,219,255,231,255,0,192,0,160,0,88,0,63,128,48,192,23,32,23,16,22,8,12,4,4,2,2,1,1,129,0,66,0,36,0,24,0},
+ {255,63,255,95,255,167,255,192,127,207,191,239,223,239,143,239,23,247,59,250,125,252,254,254,126,255,189,255,219,255,231,255,0,192,0,160,0,88,0,63,128,48,64,16,32,16,112,16,232,8,196,5,130,3,1,1,129,0,66,0,36,0,24,0},
+ {255,63,255,95,255,167,255,192,127,207,191,239,223,239,239,239,231,247,195,251,137,253,30,254,62,255,189,255,219,255,231,255,0,192,0,160,0,88,0,63,128,48,64,16,32,16,16,16,24,8,60,4,118,2,225,1,193,0,66,0,36,0,24,0}};
 
 	static int txd=0;
 	static int tx[9];
@@ -34,7 +29,7 @@ void intro();
 void drawport(int,int);
 
 
-int main(int argc,char *argv[])
+int main(void)
 {
 	int gdriver = DETECT, gmode, errorcode;
 	initgraph(&gdriver, &gmode, "");
@@ -44,15 +39,11 @@ int main(int argc,char *argv[])
 		printf("Graphics error: %s\n", grapherrormsg(errorcode));
 		printf("Press any key to halt:");
 		getch();
-		exit(1);             /* return with error code */
+      exit(1);             /* return with error code */
 	}
 	mouse_present();
-	if (argc < 2)
-		loadbmp("parallel.bmp");
-	else if (0 != loadbmp(argv[1]))
-		loadbmp("parallel.bmp");
-
-	button quit(20,450,130,470,"Quit");
+	intro();
+	button quit(20,450,300,470,"Quit");
 	button bstop(20,420,300,440,"Stop the Receptions");
 	button reset(320,20,420,40,"Reset");
 	button portno(430,20,530,40,"For LPT1");
@@ -80,6 +71,7 @@ int main(int argc,char *argv[])
 	mouse_status mouse = {0,0,0};
 	static char rec[MAX];
 	int offport = 1;
+
 while (!exit)
 {
 	if (!stop)
@@ -142,7 +134,7 @@ while (!exit)
 }// end of receptions
 	mouse = status();
 	gotoxy(74,1);printf("%03d,%03d",mouse.x,mouse.y);
-	anim(word,5,10,0,0);
+	anim(word,6,6,0,0);
 
 	if (mouse.button == LEFT_CLICK || mouse.button == RIGHT_CLICK)
 	{
@@ -179,7 +171,7 @@ while (!exit)
 			show_mouse();
 			}//end of changing the port
 
-		else if (readport.lclick(mouse.x,mouse.y))
+		if (readport.lclick(mouse.x,mouse.y))
 			{
 				setfillstyle(SOLID_FILL,7);
 				unsigned char c=0;
@@ -270,7 +262,7 @@ while (!exit)
 				hide_mouse();
 				for (int i=0;i<8;i++)
 					txd += pow(2,i) * tx[i];
-				bar(203,120+y*25+5,249,120+y*25+20);
+				bar(203,120+y*25+2,249,120+y*25+20);
 				setcolor(0);
 				char t[10];
 				sprintf(t,"%1d",tx[y]);	outtextxy(240,130+y*25,t);
@@ -301,7 +293,7 @@ while (!exit)
 				{
 					tx[i] = temp %2;
 					temp =temp/2;
-					bar(203,120+i*25+5,249,120+i*25+20);
+					bar(203,120+i*25+2,249,120+i*25+20);
 					sprintf(t,"%1d",tx[i]);
 					outtextxy(240,130+i*25,t);
 				}//end of conversion
@@ -321,7 +313,7 @@ while (!exit)
 				{
 					tx[i] = temp %2;
 					temp =temp/2;
-					bar(203,120+i*25+5,249,120+i*25+20);
+					bar(203,120+i*25+2,249,120+i*25+20);
 					sprintf(t,"%1d",tx[i]);
 					outtextxy(240,130+i*25,t);
 				}//end of conversion
@@ -335,6 +327,118 @@ while (!exit)
 	closegraph();
 	return 0;
 }
+void intro()
+{
+	setfillstyle(SOLID_FILL,7);
+	floodfill(0,0,1);
+	settextstyle(8,0,3);
+	settextjustify(0,1);
+	outtextxy(31,40,"Parallel Port Tester");
+	setcolor(8);
+	outtextxy(30,39,"Parallel Port Tester");
+	settextstyle(12,0,1);
+	settextjustify(LEFT_TEXT,TOP_TEXT);
+	button t(20,80,300,400,"");
+	t.draw();t.depress();
+	t = button(320,80,620,400,"");
+	t.draw();t.depress();
+	char temp[70];
+	setcolor(0);
+	settextjustify(LEFT_TEXT,CENTER_TEXT);
+	for (int i=0;i < 8;i++)
+		{
+			setcolor(15);
+			line(370,120+i*20,570,120+i*20);
+			setcolor(0);
+			line(370,122+i*20,570,122+i*20);
+			sprintf(temp,"Bit %1d   Pin %2d        ",i,i+2);
+			outtextxy(75,135+25*i,temp);
+			button  a(70,121+25*i,250,121+25*i+22,"");
+			a.draw();
+		}
+
+	settextjustify(LEFT_TEXT,TOP_TEXT);
+	t = button(23,83,297,100,"Output to Port");
+	t.draw();
+	t = button(323,83,617,100,"Input from Port");
+	t.draw();
+	t = button(70,120,250,120+8*25,"");
+	t.draw();t.depress();
+	t = button(370,120,620-50,120+8*20,"");
+	t.draw();t.depress();
+	t = button(369,289,571,291+64," ");
+	t.draw();t.depress();
+	setfillstyle(SOLID_FILL,0);
+	bar(370,290,570,290 + 64);
+	line (130,121,130,320);
+	line (200,121,200,320);
+	line (463,121,463,280);
+	line (488,121,488,280);
+	line (513,121,513,280);
+	line (540,121,540,280);
+	setcolor(0);
+	line (374,126+20*4,374 + textwidth("Busy"),126+20*4);
+	line(374,126+20*5,374+textwidth("Auto Feed"),126+20*5);
+	line(374,126+20*7,374+textwidth("Select i/p"),126+20*7);
+
+
+	line (131,121,131,320);
+	line (201,121,201,320);
+	line (464,121,464,280);
+	line (489,121,489,280);
+	line (514,121,514,280);
+	line (541,121,541,280);
+
+	outtextxy(374,128+20*0,"Error       15 +1 B3");
+	outtextxy(374,128+20*1,"Select      13 +1 B4 ");
+	outtextxy(374,128+20*2,"Paper End   12 +1 B5");
+	outtextxy(374,128+20*3,"Ackno       10 +1 B6 ");
+	outtextxy(374,128+20*4,"Busy        11 +1 B7");
+	outtextxy(374,128+20*5,"Auto Feed   14 +2 B1");
+	outtextxy(374,128+20*6,"Initilaise  16 +2 B2");
+	outtextxy(374,128+20*7,"Select i/p  17 +2 B3");
+
+	setfillstyle(SOLID_FILL,0);
+	bar(320,405,620,478);
+
+
+	button b(350,420,570,475," ");
+	b.draw();
+	b= button(353,423,567,472," ");
+	b.draw();b.depress();
+	setcolor(8);
+	setfillstyle(XHATCH_FILL,8);
+	line (131,121,131,320);
+	line (201,121,201,320);
+	line(400,465,520,465);
+	line(520,465,530,430);
+	setcolor(15);
+
+	line (390,410,530,410);
+	line (390,410,350,420);
+	line (570,420,530,410);
+	setfillstyle(SOLID_FILL,8);
+	floodfill(500,411,15);
+
+	line(390,430,530,430);
+	line(390,430,400,465);
+
+	for (i=0;i < 13;i++)
+		fillellipse(400+i*10,440,3,3);
+	for (i=0;i < 12;i++)
+		fillellipse(405+i*10,455,3,3);
+	line (407,434,483,434);
+	setfillstyle(SOLID_FILL,7);
+	fillellipse(370,445,6,6);
+	fillellipse(550,445,6,6);
+	line(366,445,374,445);
+	line(546,445,554,445);
+	setcolor(8);
+	line(366,444,374,444);
+	line(546,444,554,444);
+	arc(370,445,225,45,6);
+	arc(550,445,225,45,6);
+}//end of intro
 
 void drawport(int pin,int data)
 {
@@ -351,4 +455,3 @@ void drawport(int pin,int data)
 		fillellipse(400+pin*10,440,3,3);
 
 }//end of drawing the details of the port
-
